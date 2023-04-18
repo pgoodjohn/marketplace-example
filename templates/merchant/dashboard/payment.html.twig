@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Merchant Dashboard | Payment Created{% endblock %}
+
+{% block body %}
+
+    <h1>Merchant Dashboard</h1>
+    <h2>Success!</h2>
+
+    <div class="mb-3">
+        <p>A Mollie Payment was created!</p>
+
+        <p>Mollie Payment Id: {{ paymentId }}</p>
+
+        <a href="{{ molliePaymentUrl }}">Pay</a>
+
+        <br />
+
+        <a href="{{ path('merchant_dashboard') }}">Back to the dashboard</a>
+    </div>
+
+{% endblock %}

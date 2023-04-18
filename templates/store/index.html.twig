@@ -1,0 +1,27 @@
+{% extends 'consumer_base.html.twig' %}
+
+{% block title %}Order on Mollie Feeds{% endblock %}
+
+{% block body %}
+    <div class='album py-5'>
+        <div class='container'>
+            <div class='row'>
+    {% for restaurant in restaurants %}
+        <div class='col-md-4'>
+            <div class='card mb-4 box-shadow'>
+                <img class='card-img-top' src='{{restaurant['imageUrl']}}' alt='Card image cap' style='height:180px'>
+                <div class='card-body'>
+                    <h5 class='card-title'>{{restaurant['name']}}</h5>
+                    <p class='card-text'>
+                        {{restaurant['street'] }}
+                        {{restaurant['postalCode']}} {{restaurant['city']}}<br/>
+                    </p>
+                    <a href="{{restaurant['dishesUrl']}}" class='btn btn-primary'>Order food!</a><a href='{{restaurant['url']}}' class='btn btn-secondary' style='margin-left:15px'>Visit restaurant site</a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+            </div>
+        </div>
+    <div>
+{% endblock %}

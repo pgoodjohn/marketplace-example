@@ -1,0 +1,60 @@
+version: "3"
+services:
+  api:
+    build: .
+    restart: always
+    environment:
+      APP_ENV: dev
+      APP_DEBUG: "true"
+      DATABASE_URL: "mysql://marketplace:marketplace@db:3306/marketplace?serverVersion=5.7"
+    ports:
+      - "8000:8000"
+    expose:
+      - "8000"
+    volumes:
+      - .:/code
+  nginx:
+    image: nginx:1.14
+    restart: always
+    depends_on:
+      - api
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.marketplace.tls=true"
+      - "traefik.http.routers.marketplace.rule=Host(`marketplace.mollie.localhost`)"
+      - "traefik.http.routers.marketplace.entrypoints=websecure"
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./:/var/www/api
+  db:
+    platform: linux/amd64
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: marketplace
+      MYSQL_USER: marketplace
+      MYSQL_PASSWORD: marketplace
+      MYSQL_ROOT_PASSWORD: symfony
+    ports:
+      - "33306:3306"
+    expose:
+      - "33306"
+    volumes:
+      - my-db:/var/lib/mysql
+  ngrok:
+    image: wernight/ngrok:latest
+    restart: always
+    ports:
+      - 4040:4040
+    links:
+      - api
+    environment:
+      - NGROK_LOOK_DOMAIN=api
+      - NGROK_PORT=8000
+      - NGROK_AUTH=
+networks:
+  default:
+    external:
+      name: traefik_default
+volumes:
+  my-db:

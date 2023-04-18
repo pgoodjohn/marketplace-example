@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Merchant Dashboard | Error{% endblock %}
+
+{% block body %}
+
+    <h1>Merchant Dashboard</h1>
+    <h2>Oooops!</h2>
+
+    <div class="mb-3">
+        <p>Looks like something went wrong there!</p>
+
+        <p>{{ error }}</p>
+
+        <a href="{{ path('merchant_dashboard') }}">Back to the dashboard</a>
+    </div>
+
+{% endblock %}

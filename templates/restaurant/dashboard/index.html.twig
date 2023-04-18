@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Restaurant Dashboard{% endblock %}
+
+{% block body %}
+
+    <h1>Restaurant Dashboard</h1>
+
+    {% if app.user %}
+        <div class="mb-3">
+            Welcome, {{ app.user.username }}! <br />
+
+            {% if has_restaurant_details == false %}
+                Please fill in your restaurant details <br />
+            {% endif %}
+
+            {% if is_mollie_merchant == false and has_restaurant_details == true %}
+                <a href="{{ path('connect_mollie') }}"><img style="max-width: 150px" src="https://assets.docs.mollie.com/_images/button-small@2x.png" /> </a> <br />
+            {% endif %}
+
+            {% if is_mollie_merchant == true %}
+                <div class="container">
+                {% if onboarding_status['status'] is same as ('needs-data')%}
+                    <p class="alert alert-danger">Your Mollie onboarding hasn't been completed yet!</p>
+                    <p>Click <a href="{{onboarding_status['hostedOnboardingUrl']}}" target="_blank">here</a> to finish submitting your data</p>
+                {% elseif onboarding_status['status'] is same as ('in-review')%}
+                    <p class="alert alert-warning">Mollie has all the data it needs, your profile is currently in review!</p>
+                {% else %}
+                    <p class="alert alert-success">Congratulations, your Mollie account is all set!</p>
+                {% endif%}
+                </div>
+
+                <div class="container">
+                    <h2>Your Mollie details</h2>
+                    <table>
+                        <tr>
+                            {% if onboarding_status['canReceivePayments'] %}
+                                <td><p class="alert alert-success">Can receive payments ✅</p></td>
+                            {% else %}
+                                <td><p class="alert alert-warning">Cannot receive payments yet ❎</p></td>
+                            {% endif %}
+                            {% if onboarding_status['canReceiveSettlements'] %}
+                                <td><p class="alert alert-success">Can receive settlements ✅</p></td>
+                            {% else %}
+                                <td><p class="alert alert-warning">Cannot receive settlements yet ❎</p></td>
+                            {% endif %}
+                        </tr>
+                    </table>
+                    <form  style="width:500px;align:center;margin:50px" action="{{path("submit_onboarding_data")}}" method="post">
+                        <div class="form-group row">
+                            <label for="name" class="col-4 col-form-label">Name</label>
+                            <div class="col-8">
+                                <input id="name" name="name" placeholder="Your organisation's name" type="text" required="required" class="form-control" value="{{ organization_data['name'] }}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="street" class="col-4 col-form-label">Street and Number</label>
+                            <div class="col-8">
+                                <input id="street" name="address.street" placeholder="Your organisation's street and number" type="text" class="form-control" required="required" value="{{ organization_data['address']['streetAndNumber'] }}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="postalCode" class="col-4 col-form-label">Postal Code</label>
+                            <div class="col-8">
+                                <input id="postalCode" name="address.postalCode" placeholder="Your organisation's postal code" type="text" class="form-control" required="required" value="{{ organization_data['address']['postalCode']}}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="city" class="col-4 col-form-label">City</label>
+                            <div class="col-8">
+                                <input id="city" name="address.city" placeholder="Your organisation's city" type="text" class="form-control" required="required" value="{{ organization_data['address']['city'] }}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="country" class="col-4 col-form-label">Country</label>
+                            <div class="col-8">
+                                <input id="country" name="address.country" placeholder="Your organisation's country" type="text" class="form-control" required="required" value="{{ organization_data['address']['country'] }}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="registrationNumber" class="col-4 col-form-label">Chamber of Commerce</label>
+                            <div class="col-8">
+                                <input id="registrationNumber" name="registrationNumber" type="text" class="form-control" value="{{ organization_data['registrationNumber'] }}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="vatNumber" class="col-4 col-form-label">VAT Number</label>
+                            <div class="col-8">
+                                <input id="vatNumber" name="vatNumber" type="text" class="form-control" value="{{ organization_data['vatNumber'] }}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="vatRegulation" class="col-4 col-form-label">VAT Regulation</label>
+                            <div class="col-8">
+                                <select id="vatRegulation" name="vatRegulation" class="custom-select">
+                                    <option value="" selected="{{organization_data['vatRegulation'] is null}}"></option>
+                                    <option value="shifted" selected="{{organization_data['vatRegulation'] is same as('shifted')}}">Shifted</option>
+                                    <option value="dutch" selected="{{organization_data['vatRegulation'] is same as('dutch')}}">Dutch</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="offset-4 col-8">
+                                <button name="submit" type="submit" class="btn btn-primary">Save Restaurant Data</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+
+{% endblock %}

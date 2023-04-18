@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello MollieAppConfigurationController!{% endblock %}
+
+{% block body %}
+    <style>
+        input {
+            padding: 2px;
+            margin: 4px;
+            width: 500px;
+        }
+
+        button {
+            background-color: #DDDDDD;
+            border-radius: 10%;
+            border: none;
+            padding: 8px;
+            margin-bottom: 5px;
+        }
+        button:hover {
+            background-color: #999999;
+            color: white;
+        }
+    </style>
+
+    <div class="example-wrapper">
+        <h1>Mollie App Config 🛠️</h1>
+
+        {% if configured is same as(false) %}
+            <div>
+                <p>🚨 It seems like you don't have a configured app yet, please do so here. 🚨</p>
+            </div>
+        {% endif %}
+
+        {% if updated is defined %}
+            {% if updated is same as(true) %}
+                <div>
+                    <p>🎉 Configuration edited successfully! 🎉</p>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <form method="post">
+            <div>
+                <div>
+                    <label for="inputRedirectUrl">Redirect Url</label>
+                    <input type="url" name="redirectUrl" id="inputRedirectUrl" class="form-control"
+                           autocomplete="string" value="{{ appConfiguration.redirectUrl }}" required autofocus>
+                </div>
+                <div>
+                    <label for="inputClientId">Client Id</label>
+                    <input type="text" name="clientId" id="inputClientId" class="form-control"
+                           value="{{ appConfiguration.clientId }}" required>
+                </div>
+                <div>
+                    <label for="inputClientSecret">App Secret</label>
+                    <input type="text" name="clientSecret" id="inputClientSecret" class="form-control"
+                           value="{{ appConfiguration.clientSecret }}" required>
+                </div>
+                <button class="btn btn-lg btn-primary" type="submit">
+                    Update
+                </button>
+            </div>
+        </form>
+        <a href="{{ path('app_login') }}">Log in</a>
+    </div>
+{% endblock %}
